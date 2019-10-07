@@ -42,15 +42,9 @@ func NewGroup(tiles ...Tile) (*Group, error) {
 }
 
 func allDifferentColors(tiles []Tile) bool {
-	return len(groupByColor(tiles)) == len(tiles)
+	return len(GroupByColor(tiles)) == len(tiles)
 }
 
 func allSameNumber(tiles []Tile) bool {
-	n := tiles[0].Number
-	for _, t := range tiles {
-		if t.Number != n {
-			return false
-		}
-	}
-	return true
+	return len(GroupByNumber(tiles)) == 1
 }

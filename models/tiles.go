@@ -6,26 +6,39 @@ type Color string
 
 const (
 	ColorBlack  Color = "black"
-	ColorRed    Color = "red"
 	ColorBlue   Color = "blue"
 	ColorOrange Color = "orange"
+	ColorRed    Color = "red"
+
+	NumColors     int = 4
+	SetMinLength  int = 3
+	MinTileNumber int = 1
+	MaxTileNumber int = 13
 )
 
 var (
 	ErrSetTooShort = errors.New("set too short")
-)
 
-const SetMinLength = 3
+	orderedColors = []Color{ColorBlack, ColorBlue, ColorOrange, ColorRed}
+)
 
 type Tile struct {
 	Color  Color
 	Number int
 }
 
-func groupByColor(tiles []Tile) map[Color][]Tile {
+func GroupByColor(tiles []Tile) map[Color][]Tile {
 	colors := make(map[Color][]Tile)
 	for _, t := range tiles {
 		colors[t.Color] = append(colors[t.Color], t)
 	}
 	return colors
+}
+
+func GroupByNumber(tiles []Tile) map[int][]Tile {
+	numbers := make(map[int][]Tile)
+	for _, t := range tiles {
+		numbers[t.Number] = append(numbers[t.Number], t)
+	}
+	return numbers
 }

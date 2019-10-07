@@ -33,7 +33,7 @@ func NewRun(tiles ...Tile) (*Run, error) {
 }
 
 func allSameColor(tiles []Tile) bool {
-	return len(groupByColor(tiles)) == 1
+	return len(GroupByColor(tiles)) == 1
 }
 
 func numbersAreSequence(tiles []Tile) bool {
