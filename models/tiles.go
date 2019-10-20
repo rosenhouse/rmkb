@@ -1,14 +1,17 @@
 package models
 
-import "errors"
+import (
+	"errors"
+	"sort"
+)
 
 type Color string
 
 const (
-	ColorBlack  Color = "black"
-	ColorBlue   Color = "blue"
-	ColorOrange Color = "orange"
-	ColorRed    Color = "red"
+	Black  Color = "black"
+	Blue   Color = "blue"
+	Orange Color = "orange"
+	Red    Color = "red"
 
 	NumColors     int = 4
 	SetMinLength  int = 3
@@ -19,7 +22,13 @@ const (
 var (
 	ErrSetTooShort = errors.New("set too short")
 
-	orderedColors = []Color{ColorBlack, ColorBlue, ColorOrange, ColorRed}
+	orderedColors = []Color{Black, Blue, Orange, Red}
+	colorIndex    = map[Color]int{
+		Black:  0,
+		Blue:   1,
+		Orange: 2,
+		Red:    3,
+	}
 )
 
 type Tile struct {
@@ -27,7 +36,33 @@ type Tile struct {
 	Number int
 }
 
-func GroupByColor(tiles []Tile) map[Color][]Tile {
+type Set interface {
+	Tiles() []Tile
+}
+
+func Compare(x, y *Tile) int {
+	if x.Number < y.Number {
+		return 1
+	}
+	if x.Number > y.Number {
+		return -1
+	}
+	if colorIndex[x.Color] < colorIndex[y.Color] {
+		return 1
+	}
+	if colorIndex[x.Color] > colorIndex[y.Color] {
+		return -1
+	}
+	return 0
+}
+
+func SortTiles(toSort []Tile) {
+	sort.Slice(toSort, func(i, j int) bool {
+		return Compare(&toSort[i], &toSort[j]) < 0
+	})
+}
+
+func CollectByColor(tiles []Tile) map[Color][]Tile {
 	colors := make(map[Color][]Tile)
 	for _, t := range tiles {
 		colors[t.Color] = append(colors[t.Color], t)
@@ -35,7 +70,7 @@ func GroupByColor(tiles []Tile) map[Color][]Tile {
 	return colors
 }
 
-func GroupByNumber(tiles []Tile) map[int][]Tile {
+func CollectByNumber(tiles []Tile) map[int][]Tile {
 	numbers := make(map[int][]Tile)
 	for _, t := range tiles {
 		numbers[t.Number] = append(numbers[t.Number], t)

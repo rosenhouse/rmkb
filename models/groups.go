@@ -11,26 +11,34 @@ type Group struct {
 	tiles map[Tile]struct{}
 }
 
-func (g *Group) Length() int {
+func (g Group) Length() int {
 	return len(g.tiles)
 }
 
-func (g *Group) Number() int {
-	for tile, _ := range g.tiles {
+func (g Group) CommonNumber() int {
+	for tile := range g.tiles {
 		return tile.Number
 	}
 	panic("empty group")
 }
 
-func NewGroup(tiles ...Tile) (*Group, error) {
+func (g Group) Tiles() []Tile {
+	tiles := make([]Tile, 0, len(g.tiles))
+	for t := range g.tiles {
+		tiles = append(tiles, t)
+	}
+	return tiles
+}
+
+func NewGroup(tiles ...Tile) (Group, error) {
 	if len(tiles) < 3 {
-		return nil, ErrSetTooShort
+		return Group{}, ErrSetTooShort
 	}
 	if !allDifferentColors(tiles) {
-		return nil, ErrGroupDuplicateColors
+		return Group{}, ErrGroupDuplicateColors
 	}
 	if !allSameNumber(tiles) {
-		return nil, ErrGroupNotUnitary
+		return Group{}, ErrGroupNotUnitary
 	}
 
 	asMap := make(map[Tile]struct{})
@@ -38,13 +46,13 @@ func NewGroup(tiles ...Tile) (*Group, error) {
 		asMap[t] = struct{}{}
 	}
 
-	return &Group{asMap}, nil
+	return Group{asMap}, nil
 }
 
 func allDifferentColors(tiles []Tile) bool {
-	return len(GroupByColor(tiles)) == len(tiles)
+	return len(CollectByColor(tiles)) == len(tiles)
 }
 
 func allSameNumber(tiles []Tile) bool {
-	return len(GroupByNumber(tiles)) == 1
+	return len(CollectByNumber(tiles)) == 1
 }

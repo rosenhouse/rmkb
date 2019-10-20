@@ -11,29 +11,35 @@ var (
 	ErrRunNonSequential = errors.New("run must be a sequence")
 )
 
-func (r *Run) Color() Color {
+func (r Run) CommonColor() Color {
 	return r.tiles[0].Color
 }
 
-func (r *Run) Length() int {
+func (r Run) Length() int {
 	return len(r.tiles)
 }
 
-func NewRun(tiles ...Tile) (*Run, error) {
+func (r Run) Tiles() []Tile {
+	tiles := make([]Tile, len(r.tiles))
+	copy(tiles, r.tiles)
+	return tiles
+}
+
+func NewRun(tiles ...Tile) (Run, error) {
 	if len(tiles) < 3 {
-		return nil, ErrSetTooShort
+		return Run{}, ErrSetTooShort
 	}
 	if !allSameColor(tiles) {
-		return nil, ErrRunNotMonochrome
+		return Run{}, ErrRunNotMonochrome
 	}
 	if !numbersAreSequence(tiles) {
-		return nil, ErrRunNonSequential
+		return Run{}, ErrRunNonSequential
 	}
-	return &Run{tiles}, nil
+	return Run{tiles}, nil
 }
 
 func allSameColor(tiles []Tile) bool {
-	return len(GroupByColor(tiles)) == 1
+	return len(CollectByColor(tiles)) == 1
 }
 
 func numbersAreSequence(tiles []Tile) bool {

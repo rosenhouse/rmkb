@@ -14,6 +14,24 @@ type Board struct {
 	Runs   []Run
 }
 
+func (b Board) TilesInPlay() []Tile {
+	var n int
+	for _, g := range b.Groups {
+		n += g.Length()
+	}
+	for _, r := range b.Runs {
+		n += r.Length()
+	}
+	allTiles := make([]Tile, 0, n)
+	for _, g := range b.Groups {
+		allTiles = append(allTiles, g.Tiles()...)
+	}
+	for _, r := range b.Runs {
+		allTiles = append(allTiles, r.Tiles()...)
+	}
+	return allTiles
+}
+
 type Player struct {
 	Name string
 	Rack []Tile
