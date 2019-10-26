@@ -5,40 +5,6 @@ import (
 	"sort"
 )
 
-const (
-	IdxBlack = iota
-	IdxBlue
-	IdxOrange
-	IdxRed
-)
-
-type ColorBits byte
-
-const MaskCount byte = 0b00000011
-const BitsPerColor = 2
-const NumColors = 4
-
-// TileStack represents a collection of tiles sharing a common number but potentially different colors
-// The collection may contain zero, one or two of each color.
-//
-// The count of each color is represented with 2-bits
-type TileStack byte
-
-func CountOfColor(tilestack TileStack, colorIndex int) int {
-	return int(tilestack>>(BitsPerColor*colorIndex)) & int(MaskCount)
-}
-
-const EmptyStack TileStack = 0
-
-const (
-	OneBlack TileStack = 0b00000001 << (2 * iota)
-	OneBlue
-	OneOrange
-	OneRed
-)
-
-var Colors = []TileStack{OneBlack, OneBlue, OneOrange, OneRed}
-
 type Group byte
 
 const (
@@ -137,23 +103,5 @@ func FindGroupings(tilestack TileStack) GroupingOptions {
 
 // Contains indicates if the given tilestack contain the given group-combo
 func Contains(tiles TileStack, gc GroupCombo) bool {
-	t := byte(tiles)
-	g := byte(gc)
-	m := byte(MaskCount)
-
-	ok := (t & m) >= (g & m)
-
-	t = t >> BitsPerColor
-	g = g >> BitsPerColor
-	ok = ok && ((t & m) >= (g & m))
-
-	t = t >> BitsPerColor
-	g = g >> BitsPerColor
-	ok = ok && ((t & m) >= (g & m))
-
-	t = t >> BitsPerColor
-	g = g >> BitsPerColor
-	ok = ok && ((t & m) >= (g & m))
-
-	return ok
+	return AllColorsGreaterThanOrEqualTo(TileStack(tiles), TileStack(gc))
 }

@@ -23,7 +23,7 @@ var (
 	ErrSetTooShort = errors.New("set too short")
 
 	orderedColors = []Color{Black, Blue, Orange, Red}
-	colorIndex    = map[Color]int{
+	ColorIndex    = map[Color]int{
 		Black:  0,
 		Blue:   1,
 		Orange: 2,
@@ -47,10 +47,10 @@ func Compare(x, y *Tile) int {
 	if x.Number > y.Number {
 		return -1
 	}
-	if colorIndex[x.Color] < colorIndex[y.Color] {
+	if ColorIndex[x.Color] < ColorIndex[y.Color] {
 		return 1
 	}
-	if colorIndex[x.Color] > colorIndex[y.Color] {
+	if ColorIndex[x.Color] > ColorIndex[y.Color] {
 		return -1
 	}
 	return 0
